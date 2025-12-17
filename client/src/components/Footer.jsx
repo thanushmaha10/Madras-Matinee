@@ -36,7 +36,9 @@ const Footer = () => {
           <div className="mt-6 h-px w-full bg-gradient-to-r from-transparent via-[#d4af37]/25 to-transparent"></div>
 
           <div className="mt-3 flex flex-col md:flex-row justify-between text-xs text-gray-500">
-            <span>© 2025 Madras Matinee. All rights reserved.</span>
+            <span>
+              © {new Date().getFullYear()} Madras Matinee. All rights reserved.
+            </span>
             <span>Made with ❤️ for cinema lovers</span>
           </div>
         </div>
