@@ -7,7 +7,7 @@ import Movies from "./pages/Movies";
 import MovieDetails from "./pages/MovieDetails";
 import SeatLayout from "./pages/SeatLayout";
 import MyBookings from "./pages/MyBookings";
-import Favorites from "./pages/Favorites";
+import Favourites from "./pages/Favorites";
 
 const App = () => {
   const isAdmin = useLocation().pathname.startsWith("/admin");
@@ -20,7 +20,7 @@ const App = () => {
         <Route path="/movies" element={<Movies />} />
         <Route path="/movies/:id" element={<MovieDetails />} />
         <Route path="/movies/:id/:date" element={<SeatLayout />} />
-        <Route path="favorites" element={<Favorites />} />
+        <Route path="favourites" element={<Favourites />} />
         <Route path="my-bookings" element={<MyBookings />} />
       </Routes>
       {!isAdmin && <Footer />}
