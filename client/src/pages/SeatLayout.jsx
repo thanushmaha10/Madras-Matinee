@@ -134,7 +134,6 @@ const SeatLayout = () => {
           }}
         >
           <div className="flex flex-col items-center mt-6 text-xs text-gray-300 min-w-[420px]">
-            {/* FIRST GROUP (A–B) */}
             <div className="grid grid-cols-2 gap-6 mb-6">
               {groupRows[0].map((row) => renderSeats(row))}
             </div>
