@@ -2,30 +2,23 @@ import { StarIcon, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import timeFormat from "../lib/timeformat";
+import {
+  isFavourite as checkIsFavourite,
+  toggleFavourite as toggleFav,
+} from "../lib/favourites";
 
 const MovieCard = ({ movie }) => {
   const navigate = useNavigate();
   const [isFav, setIsFav] = useState(false);
 
   useEffect(() => {
-    const favs = JSON.parse(localStorage.getItem("favourites")) || [];
-    setIsFav(favs.includes(movie._id));
+    setIsFav(checkIsFavourite(movie._id));
   }, [movie._id]);
 
-  const toggleFavourite = (e) => {
+  const handleToggleFavourite = (e) => {
     e.stopPropagation();
-
-    const favs = JSON.parse(localStorage.getItem("favourites")) || [];
-
-    let updatedFavs;
-    if (favs.includes(movie._id)) {
-      updatedFavs = favs.filter((id) => id !== movie._id);
-    } else {
-      updatedFavs = [...favs, movie._id];
-    }
-
-    localStorage.setItem("favourites", JSON.stringify(updatedFavs));
-    setIsFav(!isFav);
+    toggleFav(movie._id);
+    setIsFav(checkIsFavourite(movie._id));
   };
 
   return (
@@ -42,7 +35,7 @@ const MovieCard = ({ movie }) => {
         />
 
         <button
-          onClick={toggleFavourite}
+          onClick={handleToggleFavourite}
           className="absolute top-2 right-2 p-2 rounded-full bg-black/60 backdrop-blur hover:bg-black/80 transition"
         >
           <Heart

@@ -2,23 +2,23 @@ import { useEffect, useState } from "react";
 import { dummyShowsData } from "../assets/assets";
 import BlurCircle from "../components/BlurCircle";
 import MovieCard from "../components/MovieCard";
+import { getFavourites } from "../lib/favourites";
 
 const Favourites = () => {
   const [favMovies, setFavMovies] = useState([]);
 
   useEffect(() => {
-    const favouriteIds = JSON.parse(localStorage.getItem("favourites") || "[]");
-
-    const favouriteSet = new Set(favouriteIds.map(String));
+    const favouriteIds = getFavourites();
+    const favouriteSet = new Set(favouriteIds);
 
     const filteredMovies = dummyShowsData.filter((movie) =>
-      favouriteSet.has(String(movie._id)),
+      favouriteSet.has(String(movie._id))
     );
 
     setFavMovies(filteredMovies);
   }, []);
 
-  console.log(favMovies);
+  // console.log(favMovies);
 
   return favMovies.length > 0 ? (
     <div className="relative my-40 mb-60 min-h-[80vh] overflow-hidden px-6 md:px-16 lg:px-40 xl:px-44">

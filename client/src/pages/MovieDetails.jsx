@@ -7,6 +7,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import DateSelect from "../components/DateSelect";
 import MovieCard from "../components/MovieCard";
 import Loader from "../components/Loader";
+import {
+  isFavourite as checkIsFavourite,
+  toggleFavourite as toggleFav,
+} from "../lib/favourites";
 
 const MovieDetails = () => {
   const { id } = useParams();
@@ -26,22 +30,12 @@ const MovieDetails = () => {
 
   useEffect(() => {
     getShow();
-    const favourites = JSON.parse(localStorage.getItem("favourites") || "[]");
-    setIsFavourite(favourites.includes(id));
+    setIsFavourite(checkIsFavourite(id));
   }, [id]);
 
-  const toggleFavourite = () => {
-    let favourites = JSON.parse(localStorage.getItem("favourites") || "[]");
-
-    if (favourites.includes(id)) {
-      favourites = favourites.filter((favId) => favId !== id);
-      setIsFavourite(false);
-    } else {
-      favourites.push(id);
-      setIsFavourite(true);
-    }
-
-    localStorage.setItem("favourites", JSON.stringify(favourites));
+  const handleToggleFavourite = () => {
+    toggleFav(id);
+    setIsFavourite(checkIsFavourite(id));
   };
 
   return show ? (
@@ -86,7 +80,7 @@ const MovieDetails = () => {
             </a>
 
             <button
-              onClick={toggleFavourite}
+              onClick={handleToggleFavourite}
               className="bg-gray-700 p-2.5 rounded-full transition cursor-pointer active:scale-95"
             >
               <Heart
