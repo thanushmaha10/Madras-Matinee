@@ -41,7 +41,7 @@ const SeatLayout = () => {
     setSelectedSeats((prev) =>
       prev.includes(seatId)
         ? prev.filter((seat) => seat !== seatId)
-        : [...prev, seatId],
+        : [...prev, seatId]
     );
   };
 
@@ -73,10 +73,10 @@ const SeatLayout = () => {
   }, []);
 
   return show ? (
-    <div className="flex flex-col px-6 py-30 md:flex-row md:px-16 md:pt-50 lg:px-40">
-      <div className="bg-primary/10 border-primary/20 h-max w-full rounded-lg border py-10 lg:sticky lg:top-32 lg:w-60">
+    <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6 md:gap-10 lg:gap-16 px-6 pt-28 md:px-16 md:pt-40 lg:px-40">
+      <div className="bg-primary/10 border-primary/20 h-max w-full rounded-lg border py-10 text-center md:max-w-sm md:text-left lg:sticky lg:top-32 lg:w-60">
         <p className="px-6 text-lg font-semibold">Available Timings</p>
-        <div className="mt-5 space-y-1">
+        <div className="mt-5 space-y-1 flex flex-col items-center md:items-start">
           {show.dateTime[date].map((item) => (
             <div
               key={item.time}

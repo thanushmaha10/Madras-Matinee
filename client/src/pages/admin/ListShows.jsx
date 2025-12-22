@@ -15,7 +15,7 @@ const ListShows = () => {
       setShows([
         {
           movie: dummyShowsData[0],
-          showDatetime: "2025-06-30T02:30:00.000Z",
+          showDateTime: "2025-06-30T02:30:00.000Z",
           showPrice: 59,
           occupiedSeats: {
             A1: "user_1",
