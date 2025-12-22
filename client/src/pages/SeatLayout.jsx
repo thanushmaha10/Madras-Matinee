@@ -41,31 +41,24 @@ const SeatLayout = () => {
     setSelectedSeats((prev) =>
       prev.includes(seatId)
         ? prev.filter((seat) => seat !== seatId)
-        : [...prev, seatId]
+        : [...prev, seatId],
     );
   };
 
   const renderSeats = (row, count = 9) => (
     <div key={row} className="mt-2">
-      <div className="grid grid-cols-9 gap-1 sm:gap-2 justify-center">
+      <div className="grid grid-cols-9 justify-center gap-1 sm:gap-2">
         {Array.from({ length: count }, (_, i) => {
           const seatId = `${row}${i + 1}`;
           return (
             <button
               key={seatId}
               onClick={() => handleSeatClick(seatId)}
-              className={`
-                h-6 w-6 text-[10px]
-                sm:h-7 sm:w-7 sm:text-xs
-                md:h-8 md:w-8 md:text-sm
-                rounded border border-primary/60
-                transition
-                ${
-                  selectedSeats.includes(seatId)
-                    ? "bg-primary text-white"
-                    : "hover:bg-primary/20"
-                }
-              `}
+              className={`border-primary/60 h-6 w-6 rounded border text-[10px] transition sm:h-7 sm:w-7 sm:text-xs md:h-8 md:w-8 md:text-sm ${
+                selectedSeats.includes(seatId)
+                  ? "bg-primary text-white"
+                  : "hover:bg-primary/20"
+              } `}
             >
               {seatId}
             </button>
@@ -80,32 +73,32 @@ const SeatLayout = () => {
   }, []);
 
   return show ? (
-    <div className="flex flex-col md:flex-row px-6 md:px-16 lg:px-40 py-30 md:pt-50">
-      <div className="w-full lg:w-60 bg-primary/10 border border-primary/20 rounded-lg py-10 h-max lg:sticky lg:top-32">
-        <p className="text-lg font-semibold px-6">Available Timings</p>
+    <div className="flex flex-col px-6 py-30 md:flex-row md:px-16 md:pt-50 lg:px-40">
+      <div className="bg-primary/10 border-primary/20 h-max w-full rounded-lg border py-10 lg:sticky lg:top-32 lg:w-60">
+        <p className="px-6 text-lg font-semibold">Available Timings</p>
         <div className="mt-5 space-y-1">
           {show.dateTime[date].map((item) => (
             <div
               key={item.time}
               onClick={() => setSelectedTime(item)}
-              className={`flex items-center gap-2 px-6 py-2 w-max rounded-r-md cursor-pointer transition ${
+              className={`flex w-max cursor-pointer items-center gap-2 rounded-r-md px-6 py-2 transition ${
                 selectedTime?.time === item.time
                   ? "bg-primary text-white"
                   : "hover:bg-primary/20"
               }`}
             >
-              <ClockIcon className="w-4 h-4" />
+              <ClockIcon className="h-4 w-4" />
               <p className="text-sm">{isoTimeFormat(item.time)}</p>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="relative flex-1 flex flex-col items-center">
+      <div className="relative flex flex-1 flex-col items-center">
         <BlurCircle top="-100px" left="-100px" />
         <BlurCircle bottom="0" right="0" />
 
-        <h1 className="text-xl sm:text-2xl font-semibold mb-4">
+        <h1 className="mb-4 text-xl font-semibold sm:text-2xl">
           Select your seat
         </h1>
 
@@ -117,14 +110,14 @@ const SeatLayout = () => {
           <path
             d="M 10 40 Q 500 5 990 40"
             stroke="#FACC15"
-            strokeWidth="18"
+            strokeWidth="12"
             fill="none"
             strokeLinecap="round"
             opacity="0.7"
           />
         </svg>
 
-        <p className="text-xs sm:text-sm mb-4 text-yellow-100">SCREEN SIDE</p>
+        <p className="mb-4 text-xs text-yellow-100 sm:text-sm">SCREEN SIDE</p>
 
         <div
           className="w-full overflow-auto"
@@ -133,8 +126,8 @@ const SeatLayout = () => {
             touchAction: "pan-x pan-y pinch-zoom",
           }}
         >
-          <div className="flex flex-col items-center mt-6 text-xs text-gray-300 min-w-[420px]">
-            <div className="grid grid-cols-2 gap-6 mb-6">
+          <div className="mt-6 flex min-w-[420px] flex-col items-center text-xs text-gray-300">
+            <div className="mb-6 grid grid-cols-2 gap-6">
               {groupRows[0].map((row) => renderSeats(row))}
             </div>
 
@@ -146,9 +139,9 @@ const SeatLayout = () => {
           </div>
         </div>
 
-        <button className="flex items-center gap-2 mt-10 sm:mt-16 px-8 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium active:scale-95">
+        <button className="bg-primary hover:bg-primary-dull mt-10 flex items-center gap-2 rounded-full px-8 py-3 text-sm font-medium transition active:scale-95 sm:mt-16">
           Proceed to Checkout
-          <ArrowRightIcon strokeWidth={3} className="w-4 h-4" />
+          <ArrowRightIcon strokeWidth={3} className="h-4 w-4" />
         </button>
       </div>
     </div>
