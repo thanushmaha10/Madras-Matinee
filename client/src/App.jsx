@@ -8,6 +8,11 @@ import MovieDetails from "./pages/MovieDetails";
 import SeatLayout from "./pages/SeatLayout";
 import MyBookings from "./pages/MyBookings";
 import Favourites from "./pages/Favorites";
+import Dashboard from "./pages/admin/Dashboard";
+import Layout from "./pages/admin/Layout";
+import AddShows from "./pages/admin/AddShows";
+import ListBookings from "./pages/admin/ListBookings";
+import ListShows from "./pages/admin/ListShows";
 
 const App = () => {
   const isAdmin = useLocation().pathname.startsWith("/admin");
@@ -20,8 +25,14 @@ const App = () => {
         <Route path="/movies" element={<Movies />} />
         <Route path="/movies/:id" element={<MovieDetails />} />
         <Route path="/movies/:id/:date" element={<SeatLayout />} />
-        <Route path="favourites" element={<Favourites />} />
-        <Route path="my-bookings" element={<MyBookings />} />
+        <Route path="/favourites" element={<Favourites />} />
+        <Route path="/my-bookings" element={<MyBookings />} />
+        <Route path="/admin/*" element={<Layout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="add-shows" element={<AddShows />} />
+          <Route path="list-shows" element={<ListShows />} />
+          <Route path="list-bookings" element={<ListBookings />} />
+        </Route>
       </Routes>
       {!isAdmin && <Footer />}
     </>
