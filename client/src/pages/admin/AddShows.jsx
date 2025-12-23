@@ -3,7 +3,8 @@ import { dummyShowsData } from "../../assets/assets";
 import Loader from "../../components/Loader";
 import { kConverter } from "../../lib/kConverter";
 import Title from "../../components/admin/Title";
-import { StarIcon } from "lucide-react";
+import { CheckIcon, DeleteIcon, StarIcon } from "lucide-react";
+import dateFormat from "../../lib/dateFormat";
 
 const AddShows = () => {
   const currency = import.meta.env.VITE_CURRENCY;
@@ -13,8 +14,38 @@ const AddShows = () => {
   const [dateTimeInput, setDateTimeInput] = useState("");
   const [showPrice, setShowPrice] = useState("");
 
+  const formatDate = (date) => new Date(date).toLocaleDateString("en-GB");
+
   const fetchNowPlayingMovies = async () => {
     setNowPlayingMovies(dummyShowsData);
+  };
+
+  const handleDateTimeAdd = () => {
+    if (!dateTimeInput) return;
+    const [date, time] = dateTimeInput.split("T");
+    if (!date || !time) return;
+
+    setDateTimeSelection((prev) => {
+      const times = prev[date] || [];
+      if (!times.includes(time)) {
+        return { ...prev, [date]: [...times, time] };
+      }
+      return prev;
+    });
+  };
+
+  const handleRemoveTime = (date, time) => {
+    setDateTimeSelection((prev) => {
+      const filteredTimes = prev[date].filter((t) => t !== time);
+      if (filteredTimes.length === 0) {
+        const { [date]: _, ...rest } = prev;
+        return rest;
+      }
+      return {
+        ...prev,
+        [date]: filteredTimes,
+      };
+    });
   };
 
   useEffect(() => {
@@ -26,22 +57,22 @@ const AddShows = () => {
       <Title text1="Add" text2="Shows" />
       <p className="mt-10 text-lg font-medium">Now Playing Movies</p>
       <div className="overflow-x-auto pb-4">
-        <div className="group flex flex-wrap gap-4 mt-4 w-max">
+        <div className="group mt-4 flex w-max flex-wrap gap-4">
           {nowPlayingMovies.map((movie) => (
             <div
               key={movie.id}
-              className={`relative max-w-40 cursor-pointer group-hover:not-hover:opacity-40 hover:-translate-y-1 transition duration-300 `}
+              className={`relative max-w-40 cursor-pointer transition duration-300 group-hover:not-hover:opacity-40 hover:-translate-y-1`}
               onClick={() => setSelectedMovie(movie.id)}
             >
-              <div className="relative rounded-lg overflow-hidden">
+              <div className="relative overflow-hidden rounded-lg">
                 <img
                   src={movie.poster_path}
                   alt=""
                   className="w-full object-cover brightness-90"
                 />
-                <div className="text-sm flex items-center justify-between p-2 bg-black/70 w-full absolute bottom-0 left-0">
+                <div className="absolute bottom-0 left-0 flex w-full items-center justify-between bg-black/70 p-2 text-sm">
                   <p className="flex items-center gap-1 text-gray-400">
-                    <StarIcon className="w-4 h-4 text-primary fill-primary" />
+                    <StarIcon className="text-primary fill-primary h-4 w-4" />
                     {movie.vote_average.toFixed(1)}
                   </p>
                   <p className="text-gray-300">
@@ -50,16 +81,81 @@ const AddShows = () => {
                 </div>
               </div>
               {selectedMovie === movie.id && (
-                <div className="absolute top-2 right-2 flex items-center justify-center bg-primary h-6 w-6 rounded">
-                  <CheckIcon className="w-4 h-4 text-white" strokeWidth={2.5} />
+                <div className="bg-primary absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded">
+                  <CheckIcon className="h-4 w-4 text-white" strokeWidth={2.5} />
                 </div>
               )}
-              <p className="font-medium truncate">{movie.title}</p>
-              <p className="text-gray-400 text-sm">{movie.release_date}</p>
+              <p className="truncate font-medium">{movie.title}</p>
+              <p className="text-sm text-gray-400">{movie.release_date}</p>
             </div>
           ))}
         </div>
       </div>
+
+      <div className="mt-8">
+        <label className="mb-2 block text-sm font-medium">Show Price</label>
+        <div className="inline-flex items-center gap-2 rounded-md border border-gray-600 px-3 py-2">
+          <p className="text-sm text-gray-400">{currency}</p>
+          <input
+            min={0}
+            type="number"
+            value={showPrice}
+            onChange={(e) => setShowPrice(e.target.value)}
+            placeholder="Enter Ticket price"
+            className="outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <label className="mb-2 block text-sm font-medium">
+          Select Date and Time
+        </label>
+        <div className="inline-flex gap-5 rounded-lg border border-gray-600 p-1 pl-3">
+          <input
+            type="datetime-local"
+            value={dateTimeInput}
+            onChange={(e) => setDateTimeInput(e.target.value)}
+            className="rounded-md outline-none"
+          />
+          <button
+            onClick={handleDateTimeAdd}
+            className="bg-primary/80 hover:bg-primary cursor-pointer rounded-lg px-3 py-2 text-sm text-white"
+          >
+            Add Time
+          </button>
+        </div>
+      </div>
+
+      {Object.keys(dateTimeSelection).length > 0 && (
+        <div className="mt-6">
+          <h2 className="mb-3 font-medium">Selected Date-Time</h2>
+
+          <div className="flex flex-wrap gap-3">
+            {Object.entries(dateTimeSelection).flatMap(([date, times]) =>
+              times.map((time) => (
+                <div
+                  key={`${date}-${time}`}
+                  className="border-primary flex items-center gap-2 rounded border px-3 py-1 text-sm"
+                >
+                  <span>{formatDate(date)}</span>
+                  <span className="text-gray-400">|</span>
+                  <span>{time}</span>
+
+                  <DeleteIcon
+                    onClick={() => handleRemoveTime(date, time)}
+                    width={14}
+                    className="ml-1 cursor-pointer text-red-500 hover:text-red-700"
+                  />
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+      <button className="bg-primary hover:bg-primary/90 mt-6 cursor-pointer rounded px-8 py-2 text-white transition-all">
+        Add Show
+      </button>
     </>
   ) : (
     <Loader />
