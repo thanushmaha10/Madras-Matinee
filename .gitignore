@@ -1,1 +1,3 @@
 client/.prettierrc
+.env
+node_modules
