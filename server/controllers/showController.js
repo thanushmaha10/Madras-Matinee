@@ -123,8 +123,8 @@ export const getShow = async (req, res) => {
     });
 
     res.json({ success: true, movie, dateTime });
-  } catch (error) {
-    console.error(error);
-    res.json({ success: false, message: error.message });
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false, message: err.message });
   }
 };

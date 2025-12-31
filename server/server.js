@@ -6,6 +6,7 @@ import connectDb from "./configs/db.js";
 import { serve } from "inngest/express";
 import { inngest, functions } from "./inngest/index.js";
 import showRouter from "./routes/showRoutes.js";
+import bookingRouter from "./routes/bookingRoutes.js";
 
 const app = express();
 const port = 3000;
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
 app.use("/api/show", showRouter);
+app.use("/api/booking", bookingRouter);
 
 app.listen(port, () => {
   console.log(`Server is listening at port ${port}`);
