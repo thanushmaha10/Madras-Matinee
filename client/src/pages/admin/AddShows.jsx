@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import { dummyShowsData } from "../../assets/assets";
+// import { dummyShowsData } from "../../assets/assets";
 import Loader from "../../components/Loader";
 import { kConverter } from "../../lib/kConverter";
 import Title from "../../components/admin/Title";
 import { CheckIcon, DeleteIcon, StarIcon } from "lucide-react";
 import dateFormat from "../../lib/dateFormat";
+import { useAppContext } from "../../context/AppContext";
 
 const AddShows = () => {
+  const { axios, getToken, user, imageBaseUrl } = useAppContext();
+
   const currency = import.meta.env.VITE_CURRENCY;
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -17,7 +20,16 @@ const AddShows = () => {
   const formatDate = (date) => new Date(date).toLocaleDateString("en-GB");
 
   const fetchNowPlayingMovies = async () => {
-    setNowPlayingMovies(dummyShowsData);
+    try {
+      const { data } = await axios.get("/api/show/now-playing", {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+      if (data.success) {
+        setNowPlayingMovies(data.movies);
+      }
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+    }
   };
 
   const handleDateTimeAdd = () => {
@@ -49,8 +61,10 @@ const AddShows = () => {
   };
 
   useEffect(() => {
-    fetchNowPlayingMovies();
-  }, []);
+    if (user) {
+      fetchNowPlayingMovies();
+    }
+  }, [user]);
 
   return nowPlayingMovies.length > 0 ? (
     <>
@@ -66,8 +80,8 @@ const AddShows = () => {
             >
               <div className="relative overflow-hidden rounded-lg">
                 <img
-                  src={movie.poster_path}
-                  alt=""
+                  src={imageBaseUrl + movie.poster_path}
+                  alt="Movie Poster"
                   className="w-full object-cover brightness-90"
                 />
                 <div className="absolute bottom-0 left-0 flex w-full items-center justify-between bg-black/70 p-2 text-sm">
