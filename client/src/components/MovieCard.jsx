@@ -6,9 +6,11 @@ import {
   isFavourite as checkIsFavourite,
   toggleFavourite as toggleFav,
 } from "../lib/favourites";
+import { useAppContext } from "../context/AppContext";
 
 const MovieCard = ({ movie }) => {
   const navigate = useNavigate();
+  const {imageBaseUrl} = useAppContext();
   const [isFav, setIsFav] = useState(false);
 
   useEffect(() => {
@@ -29,7 +31,7 @@ const MovieCard = ({ movie }) => {
             navigate(`/movies/${movie._id}`);
             scrollTo(0, 0);
           }}
-          src={movie.backdrop_path}
+          src={imageBaseUrl + movie.backdrop_path}
           alt={`${movie.title} Poster`}
           className="rounded-lg h-52 w-full object-cover object-right-bottom cursor-pointer"
         />
