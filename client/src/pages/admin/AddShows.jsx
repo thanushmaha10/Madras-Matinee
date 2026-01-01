@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-// import { dummyShowsData } from "../../assets/assets";
 import Loader from "../../components/Loader";
 import { kConverter } from "../../lib/kConverter";
 import Title from "../../components/admin/Title";
 import { CheckIcon, DeleteIcon, StarIcon } from "lucide-react";
-import dateFormat from "../../lib/dateFormat";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 
@@ -62,41 +60,48 @@ const AddShows = () => {
     });
   };
 
-  const handleSubmit = async()=>{
-    try{
+  const handleSubmit = async () => {
+    try {
       setAddingShow(true);
 
-      if(!selectedMovie || Object.keys(dateTimeSelection).length === 0 || !showPrice){
-        toast('Missing required fields');
+      if (
+        !selectedMovie ||
+        Object.keys(dateTimeSelection).length === 0 ||
+        !showPrice
+      ) {
+        toast("Missing required fields");
         return;
       }
 
-      const showsInput = Object.entries(dateTimeSelection).map(([date,time]) => ({date,time}));
+      const showsInput = Object.entries(dateTimeSelection).map(
+        ([date, time]) => ({ date, time })
+      );
 
       const payload = {
         movieId: selectedMovie,
         showsInput,
-        showPrice : Number(showPrice)
+        showPrice: Number(showPrice),
+      };
+
+      const { data } = await axios.post("/api/show/add-show", payload, {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+
+      if (data.success) {
+        toast.success(data.message);
+        setSelectedMovie(null);
+        setDateTimeSelection({});
+        setShowPrice("");
+      } else {
+        toast.error(data.message);
       }
-
-      const {data} = await axios.post('/api/show/add-show', payload, {headers : {Authorization: `Bearer ${await getToken()}`}})
-
-      if(data.success){
-        toast.success(data.message)
-        setSelectedMovie(null)
-        setDateTimeSelection({})
-        setShowPrice("")
-      }else{
-        toast.error(data.message)
-      }
-
-    }catch(err){
+    } catch (err) {
       console.error("Submission error:  ", err);
-      toast.error("An error occured. Please try again")
-    }finally{
+      toast.error("An error occured. Please try again");
+    } finally {
       setAddingShow(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (user) {
@@ -205,7 +210,11 @@ const AddShows = () => {
           </div>
         </div>
       )}
-      <button onClick={handleSubmit} disabled={addingShow} className="bg-primary hover:bg-primary/90 mt-6 cursor-pointer rounded px-8 py-2 text-white transition-all">
+      <button
+        onClick={handleSubmit}
+        disabled={addingShow}
+        className="bg-primary hover:bg-primary/90 mt-6 cursor-pointer rounded px-8 py-2 text-white transition-all"
+      >
         Add Show
       </button>
     </>
