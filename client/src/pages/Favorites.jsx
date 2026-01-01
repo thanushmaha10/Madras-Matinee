@@ -3,15 +3,17 @@ import { dummyShowsData } from "../assets/assets";
 import BlurCircle from "../components/BlurCircle";
 import MovieCard from "../components/MovieCard";
 import { getFavourites } from "../lib/favourites";
+import { useAppContext } from "../context/AppContext";
 
 const Favourites = () => {
   const [favMovies, setFavMovies] = useState([]);
+  const {shows} = useAppContext();
 
   useEffect(() => {
     const favouriteIds = getFavourites();
     const favouriteSet = new Set(favouriteIds);
 
-    const filteredMovies = dummyShowsData.filter((movie) =>
+    const filteredMovies = shows.filter((movie) =>
       favouriteSet.has(String(movie._id))
     );
 
