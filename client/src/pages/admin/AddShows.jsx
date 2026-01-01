@@ -6,6 +6,7 @@ import Title from "../../components/admin/Title";
 import { CheckIcon, DeleteIcon, StarIcon } from "lucide-react";
 import dateFormat from "../../lib/dateFormat";
 import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 const AddShows = () => {
   const { axios, getToken, user, imageBaseUrl } = useAppContext();
@@ -16,6 +17,7 @@ const AddShows = () => {
   const [dateTimeSelection, setDateTimeSelection] = useState({});
   const [dateTimeInput, setDateTimeInput] = useState("");
   const [showPrice, setShowPrice] = useState("");
+  const [addingShow, setAddingShow] = useState(false);
 
   const formatDate = (date) => new Date(date).toLocaleDateString("en-GB");
 
@@ -59,6 +61,42 @@ const AddShows = () => {
       };
     });
   };
+
+  const handleSubmit = async()=>{
+    try{
+      setAddingShow(true);
+
+      if(!selectedMovie || Object.keys(dateTimeSelection).length === 0 || !showPrice){
+        toast('Missing required fields');
+        return;
+      }
+
+      const showsInput = Object.entries(dateTimeSelection).map(([date,time]) => ({date,time}));
+
+      const payload = {
+        movieId: selectedMovie,
+        showsInput,
+        showPrice : Number(showPrice)
+      }
+
+      const {data} = await axios.post('/api/show/add-show', payload, {headers : {Authorization: `Bearer ${await getToken()}`}})
+
+      if(data.success){
+        toast.success(data.message)
+        setSelectedMovie(null)
+        setDateTimeSelection({})
+        setShowPrice("")
+      }else{
+        toast.error(data.message)
+      }
+
+    }catch(err){
+      console.error("Submission error:  ", err);
+      toast.error("An error occured. Please try again")
+    }finally{
+      setAddingShow(false);
+    }
+  }
 
   useEffect(() => {
     if (user) {
@@ -167,7 +205,7 @@ const AddShows = () => {
           </div>
         </div>
       )}
-      <button className="bg-primary hover:bg-primary/90 mt-6 cursor-pointer rounded px-8 py-2 text-white transition-all">
+      <button onClick={handleSubmit} disabled={addingShow} className="bg-primary hover:bg-primary/90 mt-6 cursor-pointer rounded px-8 py-2 text-white transition-all">
         Add Show
       </button>
     </>

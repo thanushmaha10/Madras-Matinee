@@ -11,8 +11,13 @@ import Loader from "../../components/Loader";
 import Title from "../../components/admin/Title";
 import BlurCircle from "../../components/BlurCircle";
 import dateFormat from "../../lib/dateFormat";
+import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
+
+  const { axios, getToken, user, imageBaseUrl } = useAppContext();
+
   const currency = import.meta.env.VITE_CURRENCY;
 
   const [dashboardData, setDashboardData] = useState({
@@ -47,13 +52,28 @@ const Dashboard = () => {
   ];
 
   const fetchDashboardData = async () => {
-    setDashboardData(dummyDashboardData);
-    setLoading(false);
+    try{
+      const {data} = await axios.get("/api/admin/dashboard", {headers: {
+        Authorization: `Bearer ${await getToken()}`
+      }})
+      if (data.success){
+        setDashboardData(data.dashboardData)
+        setLoading(false)
+      }else{
+        toast.error(data.message)
+      }
+    }catch(err){
+      toast.error("Error fetching dashboard data: ", err)
+    }
+    
   };
 
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
+    if(user){
+
+      fetchDashboardData();
+    }
+  }, [user]);
 
   return !loading ? (
     <>
@@ -84,7 +104,7 @@ const Dashboard = () => {
             className="bg-primary/10 border-primary/20 h-full w-55 overflow-hidden rounded-lg border pb-3 transition duration-300 hover:-translate-y-1"
           >
             <img
-              src={show.movie.poster_path}
+              src={imageBaseUrl + show.movie.poster_path}
               alt="Movie Poster"
               className="h-60 w-full object-cover"
             />

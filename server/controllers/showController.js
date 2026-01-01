@@ -2,20 +2,23 @@ import axios from "axios";
 import Movie from "../models/Movie.js";
 import Show from "../models/Show.js";
 
+//TMDB AXIOS INSTANCE
+const tmdb = axios.create({
+  baseURL: "https://api.themoviedb.org/3",
+  timeout: 8000,
+  headers: {
+    Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
+    Accept: "application/json",
+  },
+});
+
 // API to get now playing movies from TMDB API
 export const getNowPlayingMovies = async (req, res) => {
   try {
-    const { data } = await axios.get(
-      "https://api.themoviedb.org/3/movie/now_playing",
-      {
-        headers: { Authorization: `Bearer ${process.env.TMDB_API_KEY}` },
-      }
-    );
-
-    const movies = data.results;
-    res.json({ success: true, movies: movies });
+    const { data } = await tmdb.get("/movie/now_playing");
+    res.json({ success: true, movies: data.results });
   } catch (err) {
-    console.error(err);
+    console.error(err.code || err.message);
     res.json({ success: false, message: err.message });
   }
 };
@@ -25,17 +28,24 @@ export const addShow = async (req, res) => {
   try {
     const { movieId, showsInput, showPrice } = req.body;
 
-    let movie = await Movie.findById(movieId);
+    let movie = await Movie.findOne({ _id: String(movieId) });
 
     if (!movie) {
-      const [movieDetailsResponse, movieCreditsResponse] = await Promise.all([
-        axios.get(`https://api.themoviedb.org/3/movie/${movieId}`, {
-          headers: { Authorization: `Bearer ${process.env.TMDB_API_KEY}` },
-        }),
-        axios.get(`https://api.themoviedb.org/3/movie/${movieId}/credits`, {
-          headers: { Authorization: `Bearer ${process.env.TMDB_API_KEY}` },
-        }),
-      ]);
+      let movieDetailsResponse;
+      let movieCreditsResponse;
+      try {
+        movieDetailsResponse = await tmdb.get(`/movie/${movieId}`);
+        movieCreditsResponse = await tmdb.get(`/movie/${movieId}/credits`);
+      } catch (tmdbError) {
+        console.error(
+          "TMDB fetch failed:",
+          tmdbError.code || tmdbError.message
+        );
+        return res.status(503).json({
+          success: false,
+          message: "Unable to fetch movie details. Please try again.",
+        });
+      }
 
       const movieApiData = movieDetailsResponse.data;
       const movieCreditsData = movieCreditsResponse.data;
@@ -55,7 +65,6 @@ export const addShow = async (req, res) => {
         runtime: movieApiData.runtime,
       };
 
-      // Add movie to the database
       movie = await Movie.create(movieDetails);
     }
 
