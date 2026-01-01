@@ -12,14 +12,36 @@ const tmdb = axios.create({
   },
 });
 
+const nowPlayingCache = {
+  data: null,
+  lastFetched: 0,
+};
+
 // API to get now playing movies from TMDB API
 export const getNowPlayingMovies = async (req, res) => {
   try {
+    const now = Date.now();
+
+    // cache for 10 minutes
+    if (nowPlayingCache.data && now - nowPlayingCache.lastFetched < 600000) {
+      return res.json({
+        success: true,
+        movies: nowPlayingCache.data,
+      });
+    }
+
     const { data } = await tmdb.get("/movie/now_playing");
+
+    nowPlayingCache.data = data.results;
+    nowPlayingCache.lastFetched = now;
+
     res.json({ success: true, movies: data.results });
   } catch (err) {
-    console.error(err.code || err.message);
-    res.json({ success: false, message: err.message });
+    console.error("TMDB ECONNRESET:", err.code);
+    res.status(503).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 
