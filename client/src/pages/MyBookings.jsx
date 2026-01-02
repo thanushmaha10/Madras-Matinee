@@ -1,25 +1,79 @@
 import { useEffect, useState } from "react";
-import { dummyBookingData } from "../assets/assets";
-import { Loader } from "lucide-react";
 import BlurCircle from "../components/BlurCircle";
 import timeFormat from "../lib/timeformat";
 import dateFormat from "../lib/dateFormat";
+import { useAppContext } from "../context/AppContext";
+import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
 const MyBookings = () => {
   const currency = import.meta.env.VITE_CURRENCY;
+  const navigate = useNavigate();
+
+  const {
+    axios,
+    getToken,
+    user,
+    imageBaseUrl,
+  } = useAppContext();
+
   const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const getMyBookings = async () => {
-    setBookings(dummyBookingData);
-    setIsLoading(false);
+    try{ 
+      const { data } = await axios.get("/api/user/bookings", {
+        headers: { Authorization: `Bearer ${await getToken()}` },
+      });
+      if (data.success) {
+        setBookings(data.bookings);
+      }
+    }catch(err){
+      console.error("Error fetching bookings:", err);
+    }finally{
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    getMyBookings();
-  }, []);
+    if(user){
+      getMyBookings();
+    }
+  }, [user]);
 
-  return !isLoading ? (
+  // console.log("Bookings:", bookings);
+
+  if(isLoading){
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (bookings.length === 0) {
+    return (
+    <div className="flex h-screen flex-col items-center justify-center gap-8 px-6 text-center">
+      <h1 className="text-3xl md:text-4xl font-bold leading-tight">
+        No Bookings Found
+      </h1>
+
+      <p className="text-gray-400 text-base md:text-lg max-w-md">
+        Looks like you haven’t booked any shows yet.  
+        Explore movies and book your tickets now.
+      </p>
+
+      <button
+        onClick={() => navigate("/movies")}
+        className="flex items-center gap-2 px-8 py-3 text-sm md:text-base bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer"
+      >
+        Book Now
+      </button>
+    </div>
+  );
+  }
+
+  return  (
     <div className="relative min-h-[80vh] px-6 pt-30 md:px-16 md:pt-40 lg:px-40">
       <BlurCircle top="100px" left="100px" />
       <div>
@@ -34,7 +88,7 @@ const MyBookings = () => {
         >
           <div className="flex flex-col md:flex-row">
             <img
-              src={item.show.movie.poster_path}
+              src={imageBaseUrl + item.show.movie.poster_path}
               alt="Movie Poster"
               className="aspect-video h-auto rounded object-cover object-bottom md:max-w-45"
             />
@@ -74,9 +128,7 @@ const MyBookings = () => {
         </div>
       ))}
     </div>
-  ) : (
-    <Loader />
-  );
+  ) 
 };
 
 export default MyBookings;

@@ -3,11 +3,14 @@ import BlurCircle from "../components/BlurCircle";
 import Loader from "../components/Loader";
 import { useAppContext } from "../context/AppContext";
 import { useClerk, useUser } from "@clerk/clerk-react";
+import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Favorite = () => {
   const { favouriteMovies, favouritesLoading } = useAppContext();
   const { openSignIn } = useClerk();
   const { user, isLoaded } = useUser();
+  const navigate = useNavigate();
 
   if (!isLoaded) {
     return <Loader />;
@@ -55,11 +58,19 @@ const Favorite = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-3xl font-bold text-center">
-        No favourite movies available
-      </h1>
-    </div>
+    <div className="flex h-screen flex-col items-center justify-center gap-6">
+  <h1 className="text-3xl font-bold text-center">
+    No favourite movies available
+  </h1>
+
+  <button
+    onClick={() => navigate("/movies")}
+    className="flex items-center gap-1 px-6 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer"
+  >
+    Explore Movies
+    <ArrowRight className="h-5 w-5" />
+  </button>
+</div>
   );
 };
 
