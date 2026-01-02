@@ -74,3 +74,42 @@ export const getOccupiedSeats = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+
+export const payBooking = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    const { userId } = req.auth(); // Clerk user
+
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.json({ success: false, message: "Booking not found" });
+    }
+
+    // ownership check
+    if (booking.user.toString() !== userId) {
+      return res.json({ success: false, message: "Not authorized" });
+    }
+
+    if (booking.isPaid) {
+      return res.json({ success: true, message: "Already paid" });
+    }
+
+    const showData = await Show.findById(booking.show);
+
+    // permanently occupy seats
+    booking.bookedSeats.forEach((seat) => {
+      showData.occupiedSeats[seat] = booking.user;
+    });
+
+    showData.markModified("occupiedSeats");
+    booking.isPaid = true;
+
+    await booking.save();
+    await showData.save();
+
+    res.json({ success: true, message: "Payment successful" });
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false, message: "Payment failed" });
+  }
+};
