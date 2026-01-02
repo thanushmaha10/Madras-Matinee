@@ -1,5 +1,6 @@
 import Booking from "../models/Booking.js";
 import Show from "../models/Show.js";
+import { inngest } from "../inngest/index.js";
 
 // Function to check availability of selected seats for a movie
 const checkSeatsAvailability = async (showId, selectedSeats) => {
@@ -53,6 +54,14 @@ export const createBooking = async (req, res) => {
     showData.markModified("occupiedSeats");
 
     await showData.save();
+
+    // Run Inngest Sheduler Function to check payment status after 10 minutes
+    await inngest.send({
+      name: "app/checkpayment",
+      data: {
+        bookingId: booking._id.toString(),
+      },
+    });
 
     res.json({ success: true, message: "Seat Booked Successfully" });
   } catch (err) {
