@@ -30,7 +30,12 @@ export const getNowPlayingMovies = async (req, res) => {
       });
     }
 
-    const { data } = await tmdb.get("/movie/now_playing");
+    const { data } = await tmdb.get("/movie/now_playing", {
+      params: {
+        region: "IN",
+        language: "ta-IN",
+      },
+    });
 
     nowPlayingCache.data = data.results;
     nowPlayingCache.lastFetched = now;
