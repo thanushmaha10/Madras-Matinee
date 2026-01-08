@@ -37,10 +37,14 @@ export const getNowPlayingMovies = async (req, res) => {
       },
     });
 
-    nowPlayingCache.data = data.results;
+    const sortedMovies = data.results.sort(
+      (a, b) => b.popularity - a.popularity
+    );
+
+    nowPlayingCache.data = sortedMovies;
     nowPlayingCache.lastFetched = now;
 
-    res.json({ success: true, movies: data.results });
+    res.json({ success: true, movies: sortedMovies });
   } catch (err) {
     console.error("TMDB ECONNRESET:", err.code);
     res.status(503).json({
