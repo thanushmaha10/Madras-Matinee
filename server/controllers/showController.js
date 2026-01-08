@@ -23,7 +23,7 @@ export const getNowPlayingMovies = async (req, res) => {
     const now = Date.now();
 
     // cache for 10 minutes
-    if (nowPlayingCache.data && now - nowPlayingCache.lastFetched < 600000) {
+    if (nowPlayingCache?.data) {
       return res.json({
         success: true,
         movies: nowPlayingCache.data,

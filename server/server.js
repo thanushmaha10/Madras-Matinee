@@ -16,7 +16,17 @@ const port = 3000;
 await connectDb();
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "https://madrasmatinee.vercel.app",
+      "https://madrasmatinee-e6ne6eeig-thanush-mahas-projects.vercel.app",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 app.use(clerkMiddleware());
 
 app.get("/", (req, res) => {
