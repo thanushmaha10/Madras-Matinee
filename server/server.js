@@ -21,6 +21,7 @@ app.use(
     origin: [
       "https://madrasmatinee.vercel.app",
       "https://madrasmatinee-e6ne6eeig-thanush-mahas-projects.vercel.app",
+      "https://madrasmatinee-thanush-mahas-projects.vercel.app",
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
