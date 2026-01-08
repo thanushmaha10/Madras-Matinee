@@ -33,7 +33,7 @@ export const getNowPlayingMovies = async (req, res) => {
     const { data } = await tmdb.get("/movie/now_playing", {
       params: {
         region: "IN",
-        language: "ta-IN",
+        language: "en-US",
       },
     });
 
