@@ -19,11 +19,11 @@ const syncUserCreation = inngest.createFunction(
         name: `${first_name} ${last_name}`,
         image: image_url || "",
       },
-      { upsert: true, new: true }
+      { upsert: true, new: true },
     );
 
     return { success: true };
-  }
+  },
 );
 
 const syncUserDeletion = inngest.createFunction(
@@ -37,7 +37,7 @@ const syncUserDeletion = inngest.createFunction(
     const { id } = event.data;
     await User.findByIdAndDelete(id);
     return { success: true };
-  }
+  },
 );
 
 const syncUserUpdation = inngest.createFunction(
@@ -54,11 +54,11 @@ const syncUserUpdation = inngest.createFunction(
         name: `${first_name} ${last_name}`,
         image: image_url || "",
       },
-      { upsert: true }
+      { upsert: true },
     );
 
     return { success: true };
-  }
+  },
 );
 
 // Inngest Function to cancel booking and release seats of show after 10 minutes of booking created if payment is not made
@@ -66,7 +66,7 @@ const releaseSeatsAndDeleteBooking = inngest.createFunction(
   { id: "release-seats-delete-booking" },
   { event: "app/checkpayment" },
   async ({ event, step }) => {
-    const tenMinutesLater = new Date(Date.now() + 1 * 60 * 1000);
+    const tenMinutesLater = new Date(Date.now() + 10 * 60 * 1000);
     await step.sleepUntil("wait-for-10-minutes", tenMinutesLater);
 
     await step.run("check-payment-status", async () => {
@@ -84,7 +84,7 @@ const releaseSeatsAndDeleteBooking = inngest.createFunction(
         await Booking.findByIdAndDelete(booking._id);
       }
     });
-  }
+  },
 );
 
 export const functions = [

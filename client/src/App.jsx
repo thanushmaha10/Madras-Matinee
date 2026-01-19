@@ -18,7 +18,16 @@ import { SignIn } from "@clerk/clerk-react";
 
 const App = () => {
   const isAdmin = useLocation().pathname.startsWith("/admin");
-  const { user } = useAppContext();
+  const { user, appLoading } = useAppContext();
+
+   if (appLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-black">
+        <Loader />
+      </div>
+    );
+  }
+  
   return (
     <>
       <Toaster />
