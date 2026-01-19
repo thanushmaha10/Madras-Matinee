@@ -15,6 +15,7 @@ import ListBookings from "./pages/admin/ListBookings";
 import ListShows from "./pages/admin/ListShows";
 import { useAppContext } from "./context/AppContext";
 import { SignIn } from "@clerk/clerk-react";
+import Loader from "./components/Loader";
 
 const App = () => {
   const isAdmin = useLocation().pathname.startsWith("/admin");
