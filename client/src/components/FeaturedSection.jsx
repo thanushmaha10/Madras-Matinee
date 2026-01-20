@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import BlurCircle from "./BlurCircle";
 import MovieCard from "./MovieCard";
 import { useAppContext } from "../context/AppContext";
+import MovieCardSkeleton from "./MovieCardSkeleton";
 
 const FeaturedSection = () => {
   const navigate = useNavigate();
-  const {shows} = useAppContext();
+  const {shows, showsLoading} = useAppContext();
 
-  const isLoading = shows.length === 0;
+  const isLoading = showsLoading;
 
   return (
     <div className="px-6 md:px-16 lg:px-24 xl:px-44 overflow-hidden">
