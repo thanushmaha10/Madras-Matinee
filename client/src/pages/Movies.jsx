@@ -1,11 +1,11 @@
-import { dummyShowsData } from "../assets/assets";
 import BlurCircle from "../components/BlurCircle";
 import MovieCard from "../components/MovieCard";
 import { useAppContext } from "../context/AppContext";
 
 const Movies = () => {
 
-  const {shows} = useAppContext();
+  const {shows, showsLoading} = useAppContext();
+
 
   return shows.length > 0 ? (
     <div className="relative my-40 mb-60 min-h-[80vh] overflow-hidden px-6 md:px-16 lg:px-40 xl:px-44">
@@ -14,7 +14,8 @@ const Movies = () => {
 
       <h1 className="my-4 text-lg font-medium">Now showing</h1>
       <div className="flex flex-wrap gap-8 max-sm:justify-center">
-        {shows.map((movie) => (
+        {showsLoading ? [...Array(4)].map((_, i) => <MovieCardSkeleton key={i} />)
+        : shows.map((movie) => (
           <MovieCard movie={movie} key={movie._id} />
         ))}
       </div>

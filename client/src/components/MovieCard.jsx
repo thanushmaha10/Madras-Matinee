@@ -33,15 +33,6 @@ const MovieCard = ({ movie }) => {
     );
   }, [favouriteMovies, movie]);
 
-  const isMovieReady =
-    movie &&
-    movie.backdrop_path &&
-    movie.title &&
-    movie.vote_average !== undefined;
-
-  if (!isMovieReady) {
-    return <MovieCardSkeleton />;
-  }
 
   const handleToggleFavourite = async (e) => {
     e.stopPropagation();
