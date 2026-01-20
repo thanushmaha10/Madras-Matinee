@@ -1,5 +1,6 @@
 import BlurCircle from "../components/BlurCircle";
 import MovieCard from "../components/MovieCard";
+import MovieCardSkeleton from "../components/MovieCardSkeleton";
 import { useAppContext } from "../context/AppContext";
 
 const Movies = () => {
