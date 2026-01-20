@@ -8,6 +8,8 @@ const FeaturedSection = () => {
   const navigate = useNavigate();
   const {shows} = useAppContext();
 
+  const isLoading = shows.length === 0;
+
   return (
     <div className="px-6 md:px-16 lg:px-24 xl:px-44 overflow-hidden">
       <div className="relative flex items-center justify-between pt-20 pb-10">
