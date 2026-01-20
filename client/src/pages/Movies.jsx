@@ -7,22 +7,32 @@ const Movies = () => {
   const {shows, showsLoading} = useAppContext();
 
 
-  return shows.length > 0 ? (
+  return (
     <div className="relative my-40 mb-60 min-h-[80vh] overflow-hidden px-6 md:px-16 lg:px-40 xl:px-44">
       <BlurCircle top="150px" left="0px" />
       <BlurCircle top="50px" right="50px" />
 
       <h1 className="my-4 text-lg font-medium">Now showing</h1>
+
       <div className="flex flex-wrap gap-8 max-sm:justify-center">
-        {showsLoading ? [...Array(10)].map((_, i) => <MovieCardSkeleton key={i} />)
-        : shows.map((movie) => (
-          <MovieCard movie={movie} key={movie._id} />
-        ))}
+        {showsLoading &&
+          [...Array(10)].map((_, i) => (
+            <MovieCardSkeleton key={i} />
+          ))}
+
+        {!showsLoading &&
+          shows.map((movie) => (
+            <MovieCard key={movie._id || movie.id} movie={movie} />
+          ))}
       </div>
-    </div>
-  ) : (
-    <div className="flex h-screen flex-col items-center justify-center">
-      <h1 className="text-center text-3xl font-bold">No movies available</h1>
+
+      {!showsLoading && shows.length === 0 && (
+        <div className="flex h-[40vh] items-center justify-center w-full">
+          <h1 className="text-center text-3xl font-bold">
+            No movies available
+          </h1>
+        </div>
+      )}
     </div>
   );
 };
