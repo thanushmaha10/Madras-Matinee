@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import timeFormat from "../lib/timeformat";
 import { useAppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
+import MovieCardSkeleton from "./MovieCardSkeleton";
 
 const MovieCard = ({ movie }) => {
   const navigate = useNavigate();
@@ -16,15 +17,31 @@ const MovieCard = ({ movie }) => {
     fetchFavouriteMovies,
   } = useAppContext();
 
+   
+
+   
+
   const [isFav, setIsFav] = useState(false);
 
   useEffect(() => {
+    if (!movie) return;
+
     setIsFav(
       favouriteMovies.some(
         (m) => String(m._id || m.id) === String(movie._id || movie.id)
       )
     );
   }, [favouriteMovies, movie]);
+
+  const isMovieReady =
+    movie &&
+    movie.backdrop_path &&
+    movie.title &&
+    movie.vote_average !== undefined;
+
+  if (!isMovieReady) {
+    return <MovieCardSkeleton />;
+  }
 
   const handleToggleFavourite = async (e) => {
     e.stopPropagation();

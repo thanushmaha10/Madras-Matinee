@@ -19,15 +19,8 @@ import Loader from "./components/Loader";
 
 const App = () => {
   const isAdmin = useLocation().pathname.startsWith("/admin");
-  const { user, appLoading } = useAppContext();
+  const { user } = useAppContext();
 
-   if (appLoading) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-black">
-        <Loader />
-      </div>
-    );
-  }
   
   return (
     <>
