@@ -14,7 +14,7 @@ const Movies = () => {
 
       <h1 className="my-4 text-lg font-medium">Now showing</h1>
       <div className="flex flex-wrap gap-8 max-sm:justify-center">
-        {showsLoading ? [...Array(4)].map((_, i) => <MovieCardSkeleton key={i} />)
+        {showsLoading ? [...Array(10)].map((_, i) => <MovieCardSkeleton key={i} />)
         : shows.map((movie) => (
           <MovieCard movie={movie} key={movie._id} />
         ))}
