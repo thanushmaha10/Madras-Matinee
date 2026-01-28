@@ -28,7 +28,7 @@ The application provides a smooth browsing experience by fetching and displaying
 
 ## 🌐 Live Demo
 
-Live Application: https://madrasmatinee-server.vercel.app
+Live Application: https://madrasmatinee.vercel.app
 
 ---
 
