@@ -6,13 +6,13 @@ The application provides a smooth browsing experience by fetching and displaying
 
 ---
 
-## 🚀 Features
+## Features
 
 This application has **separate User and Admin pages**, with **admin access restricted**.
 
 ---
 
-## 👤 User Features
+## User Features
 
 Users can:
 - View all available movies and shows  
@@ -27,7 +27,7 @@ Users can:
 
 ---
 
-## 🛠 Admin Features
+## Admin Features
 
 Admins can:
 - Access a secure **Admin Dashboard**  
@@ -53,7 +53,7 @@ Admins can:
 
  ---
  
-## 📸 Screenshots
+## Screenshots
 ## Users Pages
 
 - Home page
@@ -96,7 +96,7 @@ Admins can:
 
  ---
 
-## 🌐 Live Demo
+## Live Demo
 
 Live Application: https://madrasmatinee.vercel.app
 
@@ -104,13 +104,13 @@ Live Application: https://madrasmatinee.vercel.app
 
 ---
 
-## 🎯 Purpose
+## Purpose
 
 This project was built to practice full stack development concepts such as frontend–backend integration, API handling, and building scalable web applications.
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 Thanush Maha  
 JavaScript Full Stack Developer
@@ -120,6 +120,6 @@ LinkedIn: https://www.linkedin.com/thanushm10
 
 ---
 
-## 📄 License
+## License
 
 This project is created for learning and demonstration purposes.
